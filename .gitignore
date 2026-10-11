@@ -1,1 +1,3 @@
 /docs/*
+/configs/production.yaml
+.vscode/*
