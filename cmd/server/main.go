@@ -1,6 +1,8 @@
 package main
 
-import "github.com/crisiiu/go-ecommerce-backend-api/internal/routers"
+import (
+	"github.com/crisiiu/go-ecommerce-backend-api/internal/routers"
+)
 
 func main() {
 	router := routers.NewRouter()

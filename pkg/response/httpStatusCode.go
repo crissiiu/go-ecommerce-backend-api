@@ -3,10 +3,13 @@ package response
 const (
 	ErrCodeSuccess      = 20001 //Success
 	ErrCodeParamInvalid = 20003 //Email us valid
+
+	ErrCodeInvalidToken = 30001 //Email us valid
 )
 
 // message
 var msg = map[int]string{
 	ErrCodeSuccess:      "success",
 	ErrCodeParamInvalid: "Email is valid",
+	ErrCodeInvalidToken: "Token is valid",
 }
