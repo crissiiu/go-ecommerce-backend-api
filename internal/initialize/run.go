@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/crisiiu/go-ecommerce-backend-api/global"
+	"go.uber.org/zap"
 )
 
 func Run() {
@@ -11,6 +12,7 @@ func Run() {
 	LoadConfig()
 	fmt.Println("Load Config MySQL", global.Config.MySql.Username)
 	InitLogger()
+	global.Logger.Info("Config log ok", zap.String("ok", "success"))
 	InitMySql()
 	InitRouter()
 	r := InitRouter()
