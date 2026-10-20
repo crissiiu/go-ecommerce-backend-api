@@ -1,47 +1,42 @@
 package initialize
 
 import (
-	"fmt"
-
-	"github.com/crisiiu/go-ecommerce-backend-api/internal/controller"
-	"github.com/crisiiu/go-ecommerce-backend-api/internal/middlewares"
+	"github.com/crisiiu/go-ecommerce-backend-api/global"
+	"github.com/crisiiu/go-ecommerce-backend-api/internal/routers"
 	"github.com/gin-gonic/gin"
 )
 
-func AA() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		fmt.Println("Before --> AA")
-		c.Next()
-		fmt.Println("After --> AA")
-	}
-}
-
-func BB() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		fmt.Println("Before --> BB")
-		c.Next()
-		fmt.Println("After --> BB")
-	}
-}
-
-func CC(c *gin.Context) {
-	fmt.Println("Before --> CC")
-	c.Next()
-	fmt.Println("After --> CC")
-}
-
 func InitRouter() *gin.Engine {
-	router := gin.Default()
+	var router *gin.Engine
 
-	router.Use(middlewares.AuthenticationMiddleware(), BB(), CC)
-	v1 := router.Group("/v1/2026")
-	v1.GET("/ping", controller.NewPong().Pong)                  //v1/2026/ping
-	v1.GET("/user", controller.NewUserController().GetUserByID) //v1/2026/ping
-	// v1.POST("/ping", Pong)
-	// v1.PUT("/ping", Pong)
-	// v1.PATCH("/ping", Pong)
-	// v1.DELETE("/ping", Pong)
-	// v1.OPTIONS("/ping", Pong)
+	if global.Config.Server.Mode == "dev" {
+		gin.SetMode(gin.DebugMode)
+		gin.ForceConsoleColor()
+		router = gin.Default()
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+		router = gin.New()
+	}
 
+	// middelwares
+	router.Use() //Logging
+	router.Use() //Cross
+	router.Use() // Litmit Global
+
+	manageRouter := routers.RouterGroupApp.Manage
+	userRouter := routers.RouterGroupApp.User
+
+	MainGroup := router.Group("/v1/2026")
+	{
+		MainGroup.GET("/check-status")
+	}
+	{
+		userRouter.InitUserRouter(MainGroup)
+		userRouter.InitProductRouter(MainGroup)
+	}
+	{
+		manageRouter.InitUserRouter(MainGroup)
+		manageRouter.InitAdminRouter(MainGroup)
+	}
 	return router
 }
